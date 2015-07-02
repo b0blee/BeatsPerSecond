@@ -1,0 +1,164 @@
+<!doctype html>
+<html>
+<head>
+  <title>Beats Per Second Metronome</title>
+  <script>
+  const PATH = '';
+  const SOUNDS = ['Pop', 'Tink'];
+  const EXT = '.aiff';
+  var myAudioContext,
+    myBuffers = {},
+    mySource,
+    myNodes = {},
+    myBps = 2,
+    isPlaying = false;
+
+    function init() {
+        myAudioContext = new webkitAudioContext();
+        fetchSounds();
+    }
+
+    function fetchSounds() {
+      var request = new XMLHttpRequest();
+      for (var i = 0, len = SOUNDS.length; i < len; i++) {
+        request = new XMLHttpRequest();
+        // the underscore prefix is a common naming convention
+        // to remind us that the variable is developer-supplied
+        request._soundName = SOUNDS[i];
+        request.open('GET', PATH + request._soundName + EXT, true);
+        request.responseType = 'arraybuffer';
+        request.addEventListener('load', bufferSound, false);
+        request.send();
+      }
+    }
+
+    function bufferSound(event) {
+      var request = event.target;
+      var buffer = myAudioContext.createBuffer(request.response, false);
+      myBuffers[request._soundName] = buffer;
+    }
+
+    function selectBuffer() {
+      var soundName = SOUNDS[0];
+      return myBuffers[soundName];
+    }
+
+    function routeSound(source) {
+      myNodes.panner = myAudioContext.createPanner();
+      myNodes.volume = myAudioContext.createGainNode();
+
+      // set node values to current slider values
+      var panX = document.querySelector('#pan').value;
+      var volume = document.querySelector('#volume').value;
+
+      myNodes.panner.setPosition(panX, 0, 0);
+      myNodes.volume.gain.value = volume;
+
+      // pass source through series of nodes
+      source.connect(myNodes.panner);
+      myNodes.panner.connect(myNodes.volume);
+      myNodes.volume.connect(myAudioContext.destination);
+
+      return source;
+    }
+
+    function playSound() {
+      // create a new AudioBufferSourceNode
+      var source = myAudioContext.createBufferSource();
+      source.buffer = selectBuffer();
+      source.loop = true;
+      source.loopStart = 0;
+      source.loopEnd = 1.0 / myBps;
+      source = routeSound(source);
+      source.start(0);
+      mySource = source;
+    }
+
+    function pauseSound() {
+      var source = mySource;
+      source.stop(0);
+    }
+
+    function toggleSound(button) {
+      if (!isPlaying) {
+        playSound();
+        button.value = "Stop";
+        isPlaying = true;
+      } else {
+        pauseSound();
+        button.value = "Start";
+        isPlaying = false;
+      }
+    }
+
+    function sliderChange(slider) {
+      if (myAudioContext.activeSourceCount > 0) {
+        if (slider.id == 'pan') {
+          var panX = slider.value;
+          myNodes.panner.setPosition(panX, 0, 0);
+        } else if (slider.id == 'volume') {
+          var volume = slider.value;
+          myNodes.volume.gain.value = volume;
+        }
+      }
+    }
+
+    function bpsChange(radio) {
+      myBps = radio.value;
+      if (isPlaying) {
+        pauseSound();
+        playSound();
+      }
+    }
+  </script>
+  <style>
+    body {
+      color: white;
+      background-color:#804;
+      text-align:center;
+    }
+    input {
+      /* display:block; */
+    }
+  </style>
+</head>
+<body onload="init()">
+  <h1>Beats Per Second Metronome</h1>
+  <h4 style="text-align:right">by b0b</h4>
+  <div><input id="play" onclick="toggleSound(this)" type="button" value="Start" />
+  </div>
+  <br />
+  <div>Beats Per Second<br />
+    1 <input name="bps" type="radio" onchange="bpsChange(this)" value="1" /><br />
+    2 <input name="bps" type="radio" onchange="bpsChange(this)" value="2" checked /><br />
+    3 <input name="bps" type="radio" onchange="bpsChange(this)" value="3" /><br />
+    4 <input name="bps" type="radio" onchange="bpsChange(this)" value="4" /><br />
+    5 <input name="bps" type="radio" onchange="bpsChange(this)" value="5" /><br />
+    6 <input name="bps" type="radio" onchange="bpsChange(this)" value="6" /><br />
+    7 <input name="bps" type="radio" onchange="bpsChange(this)" value="7" /><br />
+    8 <input name="bps" type="radio" onchange="bpsChange(this)" value="8" /><br />
+    9 <input name="bps" type="radio" onchange="bpsChange(this)" value="9" /><br />
+    10 <input name="bps" type="radio" onchange="bpsChange(this)" value="10" /><br />
+    11 <input name="bps" type="radio" onchange="bpsChange(this)" value="11" /><br />
+    12 <input name="bps" type="radio" onchange="bpsChange(this)" value="12" /><br />
+    13 <input name="bps" type="radio" onchange="bpsChange(this)" value="13" /><br />
+    14 <input name="bps" type="radio" onchange="bpsChange(this)" value="14" /><br />
+    15 <input name="bps" type="radio" onchange="bpsChange(this)" value="15" /><br />
+    16 <input name="bps" type="radio" onchange="bpsChange(this)" value="16" /><br />
+    17 <input name="bps" type="radio" onchange="bpsChange(this)" value="17" /><br />
+    18 <input name="bps" type="radio" onchange="bpsChange(this)" value="18" /><br />
+    19 <input name="bps" type="radio" onchange="bpsChange(this)" value="19" /><br />
+    20 <input name="bps" type="radio" onchange="bpsChange(this)" value="20" /><br />
+    21 <input name="bps" type="radio" onchange="bpsChange(this)" value="21" /><br />
+    22 <input name="bps" type="radio" onchange="bpsChange(this)" value="22" /><br />
+    23 <input name="bps" type="radio" onchange="bpsChange(this)" value="23" /><br />
+    24 <input name="bps" type="radio" onchange="bpsChange(this)" value="24" /><br />
+  </div>
+  <div>Volume:<br />
+    <input id="volume" onchange="sliderChange(this)" type="range" min="0" max="1" step="0.1" value="1" />
+  </div>
+  <div>Pan:<br />
+    <input id="pan" onchange="sliderChange(this)" type="range" min="-1.0" max="1.0" step="0.5" value="0" />
+  </div>
+</body>
+</html>
