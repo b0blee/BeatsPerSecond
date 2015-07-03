@@ -3,9 +3,9 @@
 <head>
   <title>Beats Per Second Metronome</title>
   <script>
-  const PATH = '';
+  const PATH = './';
   const SOUNDS = ['Pop', 'Tink'];
-  const EXT = '.aiff';
+  const EXT = '.mp3';
   var myAudioContext,
     myBuffers = {},
     mySource,
@@ -14,8 +14,12 @@
     isPlaying = false;
 
     function init() {
+      if('webkitAudioContext' in window) {
         myAudioContext = new webkitAudioContext();
-        fetchSounds();
+      } else {
+        myAudioContext = new AudioContext();
+      }
+      fetchSounds();
     }
 
     function fetchSounds() {
@@ -34,8 +38,15 @@
 
     function bufferSound(event) {
       var request = event.target;
-      var buffer = myAudioContext.createBuffer(request.response, false);
-      myBuffers[request._soundName] = buffer;
+      if ('webkitAudioContext' in window) {
+        var buffer = myAudioContext.createBuffer(request.response, false);
+        myBuffers[request._soundName] = buffer;
+      } else {
+        myAudioContext.decodeAudioData(request.response,
+          function(buffer) { myBuffers[request._soundName] = buffer; },
+          function(e) { alert("Error with decoding audio data"); }
+        );
+      }
     }
 
     function selectBuffer() {
@@ -45,7 +56,7 @@
 
     function routeSound(source) {
       myNodes.panner = myAudioContext.createPanner();
-      myNodes.volume = myAudioContext.createGainNode();
+      myNodes.volume = myAudioContext.createGain();
 
       // set node values to current slider values
       var panX = document.querySelector('#pan').value;
@@ -117,9 +128,6 @@
       background-color:#804;
       text-align:center;
     }
-    input {
-      /* display:block; */
-    }
   </style>
 </head>
 <body onload="init()">
@@ -154,6 +162,7 @@
     23 <input name="bps" type="radio" onchange="bpsChange(this)" value="23" /><br />
     24 <input name="bps" type="radio" onchange="bpsChange(this)" value="24" /><br />
   </div>
+  <br />
   <div>Volume:<br />
     <input id="volume" onchange="sliderChange(this)" type="range" min="0" max="1" step="0.1" value="1" />
   </div>
