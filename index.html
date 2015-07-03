@@ -38,15 +38,15 @@
 
     function bufferSound(event) {
       var request = event.target;
-      if ('webkitAudioContext' in window) {
-        var buffer = myAudioContext.createBuffer(request.response, false);
-        myBuffers[request._soundName] = buffer;
-      } else {
+      // if ('webkitAudioContext' in window) {
+      //   var buffer = myAudioContext.createBuffer(request.response, false);
+      //  myBuffers[request._soundName] = buffer;
+      // } else {
         myAudioContext.decodeAudioData(request.response,
           function(buffer) { myBuffers[request._soundName] = buffer; },
           function(e) { alert("Error with decoding audio data"); }
         );
-      }
+      // }
     }
 
     function selectBuffer() {
