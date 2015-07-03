@@ -38,18 +38,13 @@
 
     function bufferSound(event) {
       var request = event.target;
-      // if ('webkitAudioContext' in window) {
-      //   var buffer = myAudioContext.createBuffer(request.response, false);
-      //  myBuffers[request._soundName] = buffer;
-      // } else {
-        myAudioContext.decodeAudioData(request.response,
-          function(buffer) { myBuffers[request._soundName] = buffer; },
-          function(e) { alert("Error with decoding audio data"); }
-        );
-      // }
+      myAudioContext.decodeAudioData(request.response,
+        function(buffer) { myBuffers[request._soundName] = buffer; }
+      );
     }
 
     function selectBuffer() {
+      // always use the same sound for now
       var soundName = SOUNDS[0];
       return myBuffers[soundName];
     }
@@ -125,7 +120,7 @@
   <style>
     body {
       color: white;
-      background-color:#804;
+      background-color:#704;
       text-align:center;
     }
   </style>
