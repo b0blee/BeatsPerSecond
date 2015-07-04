@@ -17,10 +17,6 @@
       } else {
         myAudioContext = new AudioContext();
       }
-      fetchSound();
-    }
-
-    function fetchSound() {
       var request = new XMLHttpRequest();
       request.open('GET', SOUNDURL, true);
       request.responseType = 'arraybuffer';
@@ -67,39 +63,39 @@
     }
 
     function pauseSound() {
-      var source = mySource;
-      source.stop(0);
+      mySource.stop(0);
     }
 
     function toggleSound(button) {
-      if (!isPlaying) {
-        playSound();
-        button.value = "Stop";
-        isPlaying = true;
-      } else {
+      if (isPlaying) {
         pauseSound();
         button.value = "Start";
         isPlaying = false;
+      } else {
+        playSound();
+        button.value = "Stop";
+        isPlaying = true;
       }
     }
 
-    function sliderChange(slider) {
-      if (myAudioContext.activeSourceCount > 0) {
-        if (slider.id == 'pan') {
-          var panX = slider.value;
-          myNodes.panner.setPosition(panX, 0, 0);
-        } else if (slider.id == 'volume') {
-          var volume = slider.value;
-          myNodes.volume.gain.value = volume;
-        }
+    function volumeChange(slider) {
+      if (myNodes.volume) {
+        var volume = slider.value;
+        myNodes.volume.gain.value = volume;
+      }
+    }
+
+    function panChange(slider) {
+      if (myNodes.panner) {
+        var panX = slider.value;
+        myNodes.panner.setPosition(panX, 0, 0);
       }
     }
 
     function bpsChange(radio) {
       myBps = radio.value;
       if (isPlaying) {
-        pauseSound();
-        playSound();
+        mySource.loopEnd = 1.0 / myBps;
       }
     }
   </script>
@@ -114,11 +110,11 @@
 <body onload="init()">
   <h1>Beats Per Second Metronome</h1>
   <h4 style="text-align:right">by b0b</h4>
-  <div style="float:left; width:30%;">Volume:<br />
-    <input id="volume" onchange="sliderChange(this)" type="range" min="0" max="1" step="0.1" value="1" />
+  <div style="float:left; width:33%;">Volume:<br />
+    <input id="volume" onchange="volumeChange(this)" type="range" min="0" max="1" step="0.1" value="1" />
   </div>
-  <div style="float:right; width:30%;">Pan:<br />
-    <input id="pan" onchange="sliderChange(this)" type="range" min="-1.0" max="1.0" step="0.5" value="0" />
+  <div style="float:right; width:33%;">Pan:<br />
+    <input id="pan" onchange="panChange(this)" type="range" min="-1.0" max="1.0" step="0.5" value="0" />
   </div>
   <div><input id="play" onclick="toggleSound(this)" type="button" value="Start" />
   </div>
