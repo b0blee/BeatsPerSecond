@@ -3,11 +3,9 @@
 <head>
   <title>Beats Per Second Metronome</title>
   <script>
-  const PATH = './';
-  const SOUNDS = ['Pop', 'Tink'];
-  const EXT = '.mp3';
+  const SOUNDURL = './Pop.mp3';
   var myAudioContext,
-    myBuffers = {},
+    myBuffer,
     mySource,
     myNodes = {},
     myBps = 2,
@@ -19,34 +17,22 @@
       } else {
         myAudioContext = new AudioContext();
       }
-      fetchSounds();
+      fetchSound();
     }
 
-    function fetchSounds() {
+    function fetchSound() {
       var request = new XMLHttpRequest();
-      for (var i = 0, len = SOUNDS.length; i < len; i++) {
-        request = new XMLHttpRequest();
-        // the underscore prefix is a common naming convention
-        // to remind us that the variable is developer-supplied
-        request._soundName = SOUNDS[i];
-        request.open('GET', PATH + request._soundName + EXT, true);
-        request.responseType = 'arraybuffer';
-        request.addEventListener('load', bufferSound, false);
-        request.send();
-      }
+      request.open('GET', SOUNDURL, true);
+      request.responseType = 'arraybuffer';
+      request.addEventListener('load', bufferCallback, false);
+      request.send();
     }
 
-    function bufferSound(event) {
+    function bufferCallback(event) {
       var request = event.target;
       myAudioContext.decodeAudioData(request.response,
-        function(buffer) { myBuffers[request._soundName] = buffer; }
+        function(buffer) { myBuffer = buffer; }
       );
-    }
-
-    function selectBuffer() {
-      // always use the same sound for now
-      var soundName = SOUNDS[0];
-      return myBuffers[soundName];
     }
 
     function routeSound(source) {
@@ -71,7 +57,7 @@
     function playSound() {
       // create a new AudioBufferSourceNode
       var source = myAudioContext.createBufferSource();
-      source.buffer = selectBuffer();
+      source.buffer = myBuffer;
       source.loop = true;
       source.loopStart = 0;
       source.loopEnd = 1.0 / myBps;
@@ -128,6 +114,12 @@
 <body onload="init()">
   <h1>Beats Per Second Metronome</h1>
   <h4 style="text-align:right">by b0b</h4>
+  <div style="float:left; width:30%;">Volume:<br />
+    <input id="volume" onchange="sliderChange(this)" type="range" min="0" max="1" step="0.1" value="1" />
+  </div>
+  <div style="float:right; width:30%;">Pan:<br />
+    <input id="pan" onchange="sliderChange(this)" type="range" min="-1.0" max="1.0" step="0.5" value="0" />
+  </div>
   <div><input id="play" onclick="toggleSound(this)" type="button" value="Start" />
   </div>
   <br />
@@ -158,11 +150,7 @@
     24 <input name="bps" type="radio" onchange="bpsChange(this)" value="24" /><br />
   </div>
   <br />
-  <div>Volume:<br />
-    <input id="volume" onchange="sliderChange(this)" type="range" min="0" max="1" step="0.1" value="1" />
-  </div>
-  <div>Pan:<br />
-    <input id="pan" onchange="sliderChange(this)" type="range" min="-1.0" max="1.0" step="0.5" value="0" />
-  </div>
+
+
 </body>
 </html>
