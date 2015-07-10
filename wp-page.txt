@@ -1,0 +1,38 @@
+<!-- paste this html into a Wordpress page text view to make a BPS metronome page -->
+<h1>Beats Per Second Metronome</h1>
+<h4 style="text-align: right;">by b0b</h4>
+<div style="float: left; width: 33%;">Volume:<input id="volume" max="1" min="0" step="0.1" type="range" value="1" onchange="volumeChange(this)" />
+
+</div>
+<div style="float: right; width: 33%;">Pan:<input id="pan" max="1.0" min="-1.0" step="0.5" type="range" value="0" onchange="panChange(this)" />
+
+</div>
+<div align="center"><input id="play" style="background-color: red;" type="button" value="Start" onclick="toggleSound(this)" /></div>
+&nbsp;
+<div align="center">Beats Per Second
+
+    1 <input name="bps" type="radio" onchange="bpsChange(this)" value="1" /><br />
+    2 <input name="bps" type="radio" onchange="bpsChange(this)" value="2" checked /><br />
+    3 <input name="bps" type="radio" onchange="bpsChange(this)" value="3" /><br />
+    4 <input name="bps" type="radio" onchange="bpsChange(this)" value="4" /><br />
+    5 <input name="bps" type="radio" onchange="bpsChange(this)" value="5" /><br />
+    6 <input name="bps" type="radio" onchange="bpsChange(this)" value="6" /><br />
+    7 <input name="bps" type="radio" onchange="bpsChange(this)" value="7" /><br />
+    8 <input name="bps" type="radio" onchange="bpsChange(this)" value="8" /><br />
+    9 <input name="bps" type="radio" onchange="bpsChange(this)" value="9" /><br />
+    10 <input name="bps" type="radio" onchange="bpsChange(this)" value="10" /><br />
+    11 <input name="bps" type="radio" onchange="bpsChange(this)" value="11" /><br />
+    12 <input name="bps" type="radio" onchange="bpsChange(this)" value="12" /><br />
+    13 <input name="bps" type="radio" onchange="bpsChange(this)" value="13" /><br />
+    14 <input name="bps" type="radio" onchange="bpsChange(this)" value="14" /><br />
+    15 <input name="bps" type="radio" onchange="bpsChange(this)" value="15" /><br />
+    16 <input name="bps" type="radio" onchange="bpsChange(this)" value="16" /><br />
+    17 <input name="bps" type="radio" onchange="bpsChange(this)" value="17" /><br />
+    18 <input name="bps" type="radio" onchange="bpsChange(this)" value="18" /><br />
+    19 <input name="bps" type="radio" onchange="bpsChange(this)" value="19" /><br />
+    20 <input name="bps" type="radio" onchange="bpsChange(this)" value="20" /><br />
+    21 <input name="bps" type="radio" onchange="bpsChange(this)" value="21" /><br />
+    22 <input name="bps" type="radio" onchange="bpsChange(this)" value="22" /><br />
+    23 <input name="bps" type="radio" onchange="bpsChange(this)" value="23" /><br />
+    24 <input name="bps" type="radio" onchange="bpsChange(this)" value="24" /><br />
+</div>
